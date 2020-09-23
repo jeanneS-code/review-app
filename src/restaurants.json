@@ -1,0 +1,162 @@
+[
+  {
+    "restaurantName": "Man O'War Traditional Irish Bar & Restaurant",
+    "address": "Courtlough, Balbriggan, Co. Dublin, Ireland",
+    "lat": 53.569522,
+    "long": -6.198348,
+    "ratings": [
+      {
+        "stars": 4,
+        "comment": "Great! But not many veggie options."
+      },
+      {
+        "stars": 5,
+        "comment": "My favorite restaurant!"
+      }
+    ]
+  },
+  {
+    "restaurantName": "The Brick Room",
+    "address": "Main St, Lusk, Co. Dublin, Ireland",
+    "lat": 53.52699,
+    "long": -6.16641,
+    "ratings": [
+      {
+        "stars": 5,
+        "comment": "Tiny pizzeria next to Sacre Coeur!"
+      },
+      {
+        "stars": 3,
+        "comment": "Meh, it was fine."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Libero Pizza & Pasta Restaurant",
+    "address": " St. Edmondsbury, Lucan, Co. Dublin, Ireland",
+    "lat": 53.35759,
+    "long": -6.40724,
+    "ratings": [
+      {
+        "stars": 5,
+        "comment": "Wonderful food, wonderful service!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Gourmet Food Parlour Swords",
+    "address": "North St, Townparks, Swords, Co. Dublin, Ireland",
+    "lat": 53.461,
+    "long": -6.2203,
+    "ratings": [
+      {
+        "stars": 4,
+        "comment": "Friendly staff and service good but a bit chilly!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Green Straw",
+    "address": "Bridge Street, Ashbourne, Co. Meath, Ireland",
+    "lat": 53.509762,
+    "long": -6.39703,
+    "ratings": [
+      {
+        "stars": 3,
+        "comment": "so-so, the food was only luke warm and service quite slow!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Romayo's Donabate",
+    "address": "Chapel View, Ballalease West, Donabate, Co. Dublin, Ireland",
+    "lat": 53.4872,
+    "long": -6.1491,
+    "ratings": [
+      {
+        "stars": 5,
+        "comment": "Food was divine the decor reminded me of the Black Lodge!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "The Shoreline Bar & Bistro",
+    "address": "Kerrymount Ave, Carrickmines, Dún Laoghaire, Co. Dublin, Ireland",
+    "lat": 53.281637,
+    "long": -6.235409,
+    "ratings": [
+      {
+        "stars": 2,
+        "comment": "Never again. The food was tasteless and way overpriced!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "The Lime Kiln Gastropub",
+    "address": "Main St, Julianstown South, Julianstown, Co. Meath, Ireland",
+    "lat": 53.6729,
+    "long": -6.2857,
+    "ratings": [
+      {
+        "stars": 4,
+        "comment": "Would definitely go back again. Most delicious seafood chowder!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Mala Asian Street Food",
+    "address": "1 Dominic Street, Downtown Drogheda, Drogheda, Co. Louth, A92 CC42, Ireland",
+    "lat": 53.7167,
+    "long": -6.3524,
+    "ratings": [
+      {
+        "stars": 4,
+        "comment": "good service, good food. overall pretty nice for the price!!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  },
+  {
+    "restaurantName": "Simona Italian Fine Foods",
+    "address": "1 S Quay, Lagavooren, Drogheda, Co. Louth, A92 YH96, Ireland",
+    "lat": 53.7107,
+    "long": -6.3497,
+    "ratings": [
+      {
+        "stars": 3,
+        "comment": "Loved their wine list and cooked a great steak but service could be better!"
+      },
+      {
+        "stars": 4,
+        "comment": "Service a bit slow but great food & nice atmosphere."
+      }
+    ]
+  }
+]
