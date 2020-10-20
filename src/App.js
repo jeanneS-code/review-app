@@ -1,15 +1,15 @@
-import { hot } from "react-hot-loader/root"
 import React, { useState } from "react"
 import {
   GoogleMap,
   useLoadScript,
-  //withScriptjs,
-  //withGoogleMap,
+  // withScriptjs,
+  // withGoogleMap,
   Marker,
   InfoWindow
+  //LoadScript
 } from "@react-google-maps/api"
 
-/*import usePlacesAutocomplete, {
+import usePlacesAutocomplete, {
   getGeocode,
   getLatLng
 } from "use-places-autocomplete"
@@ -19,7 +19,7 @@ import {
   ComboboxPopover,
   ComboboxList,
   ComboboxOption
-} from "@reach/combobox"*/
+} from "@reach/combobox"
 
 import "@reach/combobox/styles.css"
 import mapStyles from "./mapStyles"
@@ -30,7 +30,7 @@ import "./App.css"
 const libraries = ["places"]
 
 const mapContainerStyle = {
-  width: "100vw",
+  width: "70vw",
   height: "100vh"
 }
 
@@ -47,6 +47,7 @@ const App = () => {
   })
   const [markers, setMarkers] = React.useState([])
   const [selected, setSelected] = useState(null)
+  const [map, setMap] = useState(null)
 
   const onMapClick = React.useCallback((event) => {
     setMarkers((current) => [
@@ -59,9 +60,28 @@ const App = () => {
     ])
   }, [])
 
+  //cannot update state directly from child component - Restaurantlist(child) to App(parent)
+  //middleware function on the parent
+  const restaurantClick = (restaurant) => {
+    console.log("passed value from chiled ", restaurant)
+    setSelected(restaurant)
+  }
+
   const mapRef = React.useRef()
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map
+    const bounds = new window.google.maps.LatLngBounds()
+    map.fitBounds(bounds)
+    setMap(map)
+  }, [])
+
+  const panTo = React.useCallback(({ lat, lng }) => {
+    mapRef.current.panTo({ lat, lng })
+    mapRef.current.setZoom(9)
+  }, [])
+
+  const onUnmount = React.useCallback(function callback(map) {
+    setMap(null)
   }, [])
 
   if (loadError) return "Error loading maps"
@@ -70,17 +90,29 @@ const App = () => {
   return (
     <div className="App">
       <div style={{ width: "60vw", height: "100vh" }}>
+        <Search panTo={panTo} />
+        <Locate panTo={panTo} />
+
         <GoogleMap
-          defaultZoom={10} //zoom level when the map loads for the first time
-          defaultCenter={{ lat: 53.349804, lng: -6.26031 }} //where the map will be centered(my hard coded position)
+          zoom={10} //zoom level when the map loads for the first time
+          center={{ lat: 53.349804, lng: -6.26031 }} //where the map will be centered(my hard coded position)
           options={options}
           mapContainerStyle={mapContainerStyle}
           onClick={onMapClick}
           onLoad={onMapLoad}
         >
+          <Marker
+            position={{
+              lat: 53.349804,
+              lng: -6.26031
+            }}
+            icon={{
+              url: "/beachflag.png"
+            }}
+          />
           {RestaurantData.map((restaurant) => (
             <Marker
-              key={restaurant.restaurantName}
+              key={restaurant.id}
               position={{
                 lat: restaurant.lat,
                 lng: restaurant.long
@@ -90,7 +122,9 @@ const App = () => {
               }}
               icon={{
                 url: "/download.svg",
-                scaledSize: new window.google.maps.Size(25, 25)
+                scaledSize: window.google
+                  ? new window.google.maps.Size(25, 25)
+                  : { width: 50, height: 50 }
               }}
             />
           ))}
@@ -120,6 +154,7 @@ const App = () => {
               }}
             >
               <div>
+                <h2>{selected.id}</h2>
                 <h2>{selected.restaurantName}</h2>
                 <p style={{ color: "red", fontWeight: "bold" }}>
                   Star Rating : {selected.ratings[0].stars}
@@ -133,9 +168,85 @@ const App = () => {
         </GoogleMap>
       </div>
       <div className="restaurant-wrapper">
-        <Restaurantlist />
+        <Restaurantlist
+          openMaker={(restaurant) => restaurantClick(restaurant)}
+        />
       </div>
     </div>
   )
 }
-export default hot(App)
+
+export default App
+
+function Locate({ panTo }) {
+  return (
+    <button
+      className="locate"
+      onClick={() => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log(position)
+            panTo({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            })
+          },
+          () => null
+        )
+      }}
+    >
+      <img src="compass.svg" alt="compass - locate me!" />
+    </button>
+  )
+}
+
+function Search({ panTo }) {
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      location: { lat: () => 53.349804, lng: () => -6.26031 },
+      radius: 200 * 1000
+    }
+  })
+
+  return (
+    <div className="search">
+      <Combobox
+        onSelect={async (address) => {
+          setValue(address, false)
+          clearSuggestions()
+          try {
+            const results = await getGeocode({ address })
+            const { lat, lng } = await getLatLng(results[0])
+            panTo({ lat, lng })
+          } catch (error) {
+            console.log("Error!")
+          }
+          console.log(address)
+        }}
+      >
+        <ComboboxInput
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value)
+          }}
+          /* disabled={!ready}*/
+          placeholder="Enter an address"
+        />
+        <ComboboxPopover>
+          <ComboboxList>
+            {status === "OK" &&
+              data.map(({ id, description }) => (
+                <ComboboxOption key={id} value={description} />
+              ))}
+          </ComboboxList>
+        </ComboboxPopover>
+      </Combobox>
+    </div>
+  )
+}
