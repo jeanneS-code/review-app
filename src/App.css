@@ -23,8 +23,16 @@
 .locate {
   position: absolute;
   top: 0.5rem;
-  right: 15rem;
+  right: 19rem;
   background: none;
   border: none;
   z-index: 10;
+}
+.Form {
+  position: absolute;
+  top: 25%;
+  margin: auto;
+  width: 400px;
+  z-index: 10;
+  background-color: rgb(112, 117, 192);
 }
