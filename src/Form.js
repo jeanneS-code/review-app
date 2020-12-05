@@ -1,36 +1,6 @@
-//in the tutorial I'm watching on Forms he does only a form and he submits data also
-//but he has this json-server installed and when he submits data in the form
-//it gets submitted to this json-server api - json-server api is an npm package
-//which essentially gives us a fake api to allow us get, post, delete and update data
-//so that's what he's using to handle data submitted to the Form
-//and when that data in the Form gets submitted to the json-server api
-//he also has a method to fetch that data and display it on the page beneath the Form
-//I have the json-server installed for this app & added the relevant entries
-//to the package.json file but I haven't run: npm run dev
-//that command runs both the json-server and the react app
-//when you run that it creates a database -db.json  - in your react directory
-//with some dummy data
-//he renames the array in the db.json to 'notes' so notes is the API endpoint
-//APIs work using 'requests' and 'responses. ' When an API requests information
-//from a web application or web server, it will receive a response.
-//The place that APIs send requests and where the resource lives, is called an endpoint.
-//so now he goes to http://localhost:3000/notes and he'll get back the data
-//in the notes array in the db.json
-
- import React, { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 
 const Form = (props) => {
-
-
-     //useEffect below so when the component mounts or it re-renders
-  //we'll fetch the data from the json-server.api
-  //so we'll add a dependancy there and when the component mounts
-  //we want to make sure we fetch the data
-
-//    useEffect(() => {
-//     fetchNotes();
-
-//  }, [])
  
     const [notes, setNotes] = useState(null) //this will be state for the notes recveived beneath the form
     const [form, setForm] = useState({ title: "", review: "" })
@@ -43,12 +13,9 @@ const Form = (props) => {
      const res = await fetch("/notes") //notes there is endpoint of the api
      const data = res.json()
      setIsSubmitting(false) //once we get data back for the server api, set back to false
-     //setNotes(data)
+     
   }
   
-
-
- // fetchNotes();
  //method to handle the user inputing values into our Form so we can update the form accordingly
  //the 'name' below is the name given to the form field in the html & we grab the value from there
  // object desctructure 
@@ -71,10 +38,6 @@ const Form = (props) => {
           };
         })
        }
-    //  setForm({
-    //      ...form,
-    //      e.target.name : e.target.value
-    //  })
    }
 
    const validate = () => {
@@ -115,23 +78,16 @@ const Form = (props) => {
       })
 
    }
-// const afterSubmit = (event) =>{
-//   let hidden = false 
-//   props.closeFrom(hidden)
 
-// }
    const handleSubmit = async (e) => {
      e.preventDefault()
      const errs = validate()
 
      if(Object.keys(errs).length === 0) {
-       //setIsSubmitting(true)
-       //await postNotes(form) not used
-       //console.log(form) 
+     
        props.closeFrom(false , form)
        setIsSubmitting(false)
        setForm({ title: "", review: "" })
-       //fetchNotes()
      }else {
        showError(errs)
      }

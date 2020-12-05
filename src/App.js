@@ -2,11 +2,8 @@ import React, { useState ,useEffect, useCallback } from "react"
 import {
   GoogleMap,
   useLoadScript,
-  // withScriptjs,
-  // withGoogleMap,
   Marker,
   InfoWindow
-  //LoadScript
 } from "@react-google-maps/api"
 
 import usePlacesAutocomplete, {
@@ -27,7 +24,6 @@ import Restaurantlist from "./Restaurantlist"
 import RestaurantData from "./restaurants.json"
 import "./App.css"
 import Form from './Form'
-//mport { defaultLoadScriptProps } from "@react-google-maps/api/dist/LoadScript"
 const libraries = ["places"]
 
 const mapContainerStyle = {
@@ -56,6 +52,7 @@ const App = () => {
   const [selected, setSelected] = useState(null) //click on a marker on the map, launch info window
   const [map, setMap] = useState(null) //not sure what this does
   const [showForm, updateForm] = useState(false)
+  const [addValue, updateValue] = useState("")
   const [formValue ,UpdateFromValue] = useState({
     restaurantName: '',
     address: "",
@@ -63,40 +60,27 @@ const App = () => {
     long: '',
     id: '',
     ratings: [],
-    /*ratings: 
-      {
-        "stars": '',
-        "comment": ''
-      }
-    ,*/
-    
-   
     time: new Date()
   })
 
-  const updatestate = useEffect(()=>{
+  const updatestate = useEffect(()=>{ //useEffect hooks takes 2 argus, ome is the fuctio, second is an array of only existing items but is watvhed for any vhanges
 
-    if (formValue.restaurantName != ''){
-      setMarkers((currentMarker) => [
-        ...currentMarker,
-        formValue
+    if (formValue.restaurantName != ''){ //update markers with restaurant we have
+      setMarkers((currentMarker) => [ //all json & created markers
+        ...currentMarker, //decstructing the markers
+        formValue //the newest marker
       ]) 
     }
    
-    console.log('state  changes')
-  },[formValue])
+  },[formValue , selected]) ;//thes aboth strates - the form value & the selected marker
 
-  //is the only purpose for this function to record the location on the map that was clicked
-  //and update state with thosecordinates?
-  //how do I do this for my form? I've tried and gotten nowhere
+//useCallback is used to memorize the version of event, so it will see this as a new click event not an old one
   const onMapClick = React.useCallback((event) => {
 
     //to show the form 
       updateForm(true)
 
-
-      console.log('before the state update ', formValue)
-      UpdateFromValue ((old)=>{
+      UpdateFromValue ((old)=>{ //old here is the old empty state for new marker to update with event location 
        return {
       ...old,
         lat: event.latLng.lat(),
@@ -108,13 +92,8 @@ const App = () => {
        }
      
       )
-     
-      console.log('after the state update with lat  ', formValue)
-      
-     
-       //UpdateFromValue() // reset like the form
-    
-  }, [showForm])
+  
+  }, [showForm]) // to forget the old event and create new event for location mapping 
 
   //cannot update state directly from child component - Restaurantlist(child) to App(parent)
   //middleware function on the parent
@@ -122,34 +101,33 @@ const App = () => {
     
     setSelected(restaurant)
   }
-  const closeForm =useCallback((value , form)=>{
 
-    console.log('event started' ,form)
-    
-    console.log('before the state update with res  ', formValue)
+
+  // after subimmting the form from the child form componenet 
+  //value is used to hide the form 
+  //form is for the form values 
+  const closeForm =useCallback((value , form)=>{
+// continue to fill the state wit h name and review of the restaurant marker 
     UpdateFromValue((old)=>{
       return {
         ...old ,
         restaurantName : form.title,
-        /*ratings["comment"]: form.review,*/
-          ratings : [{comment : form.review , stars : 4 } ]
+        ratings : [{comment : form.review , stars : 4 } ]
          }
       }
     )
-    console.log('after the state update with res  ', formValue)
-
-   
+// to hide the form after submit with false as vakue 
     updateForm(value)
   } ,[formValue])
 
+
   const request = {
-    // placeId: "ChIJN1t_tDeuEmsRUsoyG83frY4",
     query: "food",
     fields: ["name", "formatted_address", "place_id", "geometry" ,"rating"],
   };
 
   const mapRef = React.useRef()
-  const onMapLoad = React.useCallback((map) => {
+  const onMapLoad = React.useCallback((map) => {  //when map loads, getting the map & paaing to the state
     mapRef.current = map
     const bounds = new window.google.maps.LatLngBounds()
 
@@ -158,20 +136,42 @@ const App = () => {
           { location: {lat: 53.349804, lng: -6.26031 },
            radius: 1500, type: "store" })
            , (results, status) => {
-         // console.log(results)
+     
           if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            
-            
-            // setMarkers(current =>{
-            //     [...current].concat(results )
-            // } )
-            map.setCenter(results[0].geometry.location)
+
+                map.setCenter(results[0].geometry.location)
           }});
 
 
     map.fitBounds(bounds)
     setMap(map)
   }, [])
+
+// for adding reviews to old markeres from json and click 
+/**
+ * 
+ * @param {*} value  from the input inside the info window
+ */
+const addForm = (event)=>{
+
+  // get the elemnt value by id then pass it the the state from the info window input 
+updateValue(event.target.value)
+
+}
+// when we click on button inside the info window 
+const handleReviewSubmit = ()=>{
+
+  setSelected((old) =>{
+return {
+  ...old,
+  ratings : [...old.ratings ,{comment : addValue , stars : 4 } ]
+}
+  })
+  updateValue("")
+}
+
+
+
 
   const panTo = React.useCallback(({ lat, lng }) => {
     mapRef.current.panTo({ lat, lng })
@@ -184,14 +184,6 @@ const App = () => {
 
   if (loadError) return "Error loading maps"
   if (!isLoaded) return "Loading maps"
-
- //I'm not sure what any of the code is doing below
- //why have an onClick property added to the local json markers - so if you click one you get the info window?
- //what's {markers.map((marker) doing?
- //i think mapping over the markers state where the coordinates are stored is to render the markers
- //maybe move that markers mapping inside the Form compnent - we only want a marker added after form submitted
- //when I do add a new marker by clicking on the map, if i then click that marker i get errors & no info window
- //what's the difference between passing a marker and a restaurant to setSelected below
 
   return (
     <div className="App">
@@ -236,7 +228,6 @@ const App = () => {
           
           {markers.map((marker ,index) => (
             <Marker
-              // key={marker.time.toISOString()}
               key ={index}
               position={{ lat: marker.lat, lng: marker.long }}
               icon={{
@@ -265,11 +256,28 @@ const App = () => {
                 <h2>{selected.id}</h2>
                 <h2>{selected.restaurantName}</h2>
                 <p style={{ color: "red", fontWeight: "bold" }}>
-                  Star Rating : {selected.ratings[0].stars}
+                 Reviews 
                 </p>
                 <p style={{ color: "red", fontWeight: "bold" }}>
-                  Review Comment : {selected.ratings[0].comment}
+               {selected.ratings.map((item)=>(  
+                     <p>Review Comment :  {item.comment} Rating :  {item.stars}</p>
+                ))}
+                  
                 </p>
+                <p style={{ color: "red", fontWeight: "bold" }}>
+               {/* {selected.ratings.map((rev,index,arr)=>(  
+                     <p>Rating :  {rev.stars =  rev.stars+rev.stars /arr.length }</p>
+                 ))} */}
+                  
+                </p>
+                {/* //add the input and button  */}
+                <div>
+                
+                  <input type="text" value={addValue} id ="add" onChange={addForm} />
+                  <button type="but ton" onClick={handleReviewSubmit} >add review </button>
+                 
+                
+                </div>
               </div>
             </InfoWindow>
           )}
@@ -281,7 +289,7 @@ const App = () => {
         />
       </div>
       {showForm && ( 
-             <Form closeFrom = {(value ,form)=>closeForm (value ,form)} />
+              <Form closeFrom = {(value ,form)=>closeForm (value ,form)} />
           )}
     </div>
   )
@@ -346,7 +354,6 @@ function Search({ panTo }) {
           onChange={(e) => {
             setValue(e.target.value)
           }}
-          /* disabled={!ready}*/
           placeholder="Enter an address"
         />
         <ComboboxPopover>

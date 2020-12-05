@@ -10,6 +10,7 @@ class Restaurantlist extends Component {
     return (
       <div>
         <h1>Restaurants</h1>
+        /** add a drop down filter restaurant from restaurnt stars by drop down value  */
         {RestaurantData.map((RestaurantDetail, index) => {
           return (
             <div key={index}>
